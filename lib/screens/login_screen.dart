@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proyecto/providers/login_form_provider.dart';
+import 'package:proyecto/screens/screens.dart';
 import 'package:proyecto/ui/input_decorationd.dart';
 import 'package:proyecto/widgets/widgets.dart';
-
 
 class LoginScreen extends StatelessWidget {
   get loginForm => null;
@@ -40,7 +40,6 @@ class LoginScreen extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 )),
                 onPressed: () {
-                 
                   Navigator.pushReplacementNamed(context, "registry");
                 }),
             SizedBox(height: 50),
@@ -112,8 +111,10 @@ class _LoginForm extends StatelessWidget {
                         style: TextStyle(color: Colors.white),
                       )),
                   onPressed: () {
-                    if (!loginForm.isValidForm()) return;
-                    Navigator.pushReplacementNamed(context, 'homepage');
+                    FocusScope.of(context).unfocus();
+                    // if (!loginForm.isValidForm()) return;
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => HomepagenScreen()));
                   }),
             ],
           )),

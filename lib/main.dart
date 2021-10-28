@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto/screens/screens.dart';
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -14,10 +13,9 @@ class MyApp extends StatelessWidget {
       routes: {
         // rutas
         'login': (_) => LoginScreen(),
-        'home': (_) => HomeScreenView(),
-       'registry': (_) => RegistryScreen(),
-       'homepage':(_) => HomepagenScreen(),
-        
+        'registry': (_) => RegistryScreen(),
+        'homepage': (_) => HomepagenScreen(),
+        'map': (_) => MapScreenView(),
       },
       theme:
           ThemeData.light().copyWith(scaffoldBackgroundColor: Colors.grey[300]),

@@ -7,12 +7,13 @@ import 'package:proyecto/secrets.dart';
 
 import 'dart:math' show cos, sqrt, asin;
 
-class HomeScreenView extends StatefulWidget {
+class MapScreenView extends StatefulWidget {
   @override
   _MapViewState createState() => _MapViewState();
+
 }
 
-class _MapViewState extends State<HomeScreenView> {
+class _MapViewState extends State<MapScreenView> {
   CameraPosition _initialLocation =
       CameraPosition(target: LatLng(3.82161, -76.5224));
 
@@ -96,7 +97,7 @@ class _MapViewState extends State<HomeScreenView> {
 
         print('CURRENT POS: $_currentPosition');
 
-        // For moving the camera to current location
+        // Para mover la cámara a la ubicación actual
         mapController.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
@@ -114,22 +115,22 @@ class _MapViewState extends State<HomeScreenView> {
 
   _getAddress() async {
     try {
-      // Places are retrieved using the coordinates
+      // Los lugares se recuperan usando las coordenadas
       List<Placemark> p = await placemarkFromCoordinates(
           _currentPosition.latitude, _currentPosition.longitude);
 
-      // Taking the most probable result
+      // Tomando el resultado más probable
       Placemark place = p[0];
 
       setState(() {
-        // Structuring the address
+        // Estructurando la dirección
         _currentAddress =
             "${place.name}, ${place.locality}, ${place.postalCode}, ${place.country}";
 
-        // Update the text of the TextField
+        // Actualizar el texto del TextField
         startAddressController.text = _currentAddress;
 
-        // Setting the user's present location as the starting address
+        // Establecer la ubicación actual del usuario como la dirección de inicio
         _startAddress = _currentAddress;
       });
     } catch (e) {
@@ -222,8 +223,7 @@ class _MapViewState extends State<HomeScreenView> {
           destinationLongitude);
 
       double totalDistance = 0.0;
-      // calculador de distancia 
-      print('hola');
+      // calculador de distancia
       print(polylineCoordinates);
 // entre pequeños segmentos
       for (int i = 0; i < polylineCoordinates.length - 1; i++) {
@@ -268,7 +268,6 @@ class _MapViewState extends State<HomeScreenView> {
     // inicia PolylinePoints
     polylinePoints = PolylinePoints();
 
-
     // dibujando las polilíneas
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       Secrets.API_KEY, // Google Maps API Key
@@ -307,7 +306,7 @@ class _MapViewState extends State<HomeScreenView> {
 
   @override
   Widget build(BuildContext context) {
-    // Determining the screen width & height
+    // Determinando el ancho y alto de la pantalla
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -315,6 +314,16 @@ class _MapViewState extends State<HomeScreenView> {
       height: height,
       width: width,
       child: Scaffold(
+          appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => Navigator.of(context).pop()),
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          ),
+          title: Text('Menu'),
+          centerTitle: true,
+        ),
         key: _scaffoldKey,
         body: Stack(
           children: <Widget>[
@@ -382,10 +391,12 @@ class _MapViewState extends State<HomeScreenView> {
 
             SafeArea(
               child: Align(
+                
                 alignment: Alignment.topCenter,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Container(
+                    
                     decoration: BoxDecoration(
                       color: Colors.white70,
                       borderRadius: BorderRadius.all(
@@ -399,9 +410,10 @@ class _MapViewState extends State<HomeScreenView> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            'Places',
+                            'Maps',
                             style: TextStyle(fontSize: 20.0),
-                          ),
+
+                         ),
                           SizedBox(height: 10),
                           _textField(
                               label: 'Start',
@@ -483,11 +495,10 @@ class _MapViewState extends State<HomeScreenView> {
                                     });
                                   }
                                 : null,
-                           
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Show Route'.toUpperCase(),
+                                'Mostrar ruta'.toUpperCase(),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20.0,
