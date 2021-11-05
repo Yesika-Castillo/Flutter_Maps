@@ -4,6 +4,10 @@ import 'package:proyecto/providers/login_form_provider.dart';
 import 'package:proyecto/screens/screens.dart';
 import 'package:proyecto/ui/input_decorationd.dart';
 import 'package:proyecto/widgets/widgets.dart';
+import 'package:amplify_flutter/amplify.dart';
+import 'package:proyecto/amplifyconfiguration.dart';
+import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 class LoginScreen extends StatelessWidget {
   get loginForm => null;

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:proyecto/providers/login_form_provider.dart';
 import 'package:proyecto/ui/input_decorationd.dart';
 import 'package:proyecto/widgets/widgets.dart';
+
+//Amplify flutter Packages
+import 'package:amplify_flutter/amplify.dart';
+import 'package:proyecto/amplifyconfiguration.dart';
+import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 class RegistryScreen extends StatelessWidget {
   @override
@@ -17,11 +21,33 @@ class RegistryScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 10),
-                  Text('registro',
+                  Text('Registro',
                       style: Theme.of(context).textTheme.headline4),
                   SizedBox(height: 30),
-                  ChangeNotifierProvider(
-                      create: (_) => LoginFormProvider(), child: _LoginForm())
+                  LoginForm()
+                ],
+              ),
+            ),
+            SizedBox(height: 50),
+
+//Codigo de verificacion
+            CardContainer(
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Text('ingrese codigo de verificación',
+                      style: Theme.of(context).textTheme.headline6),
+                  SizedBox(height: 30),
+                  TextFormField(
+                      autocorrect: false,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecorations.authInputDecoration(
+                          hintText: 'Código',
+                          labelText: 'Código',
+                          prefixIcon: Icons.phonelink_setup_outlined),
+                      onChanged: (value) {
+                        print(value);
+                      }),
                 ],
               ),
             ),
@@ -37,12 +63,12 @@ class RegistryScreen extends StatelessWidget {
                 color: Colors.deepPurple,
                 child: Container(
                     child: Text(
-                  'Atras',
+                  'Login',
                   style: TextStyle(color: Colors.white),
                 )),
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                 // if (!loginForm.isValidForm()) return;
+                  // if (!loginForm.isValidForm()) return;
                   Navigator.pushReplacementNamed(context, "login");
                 }),
             SizedBox(height: 50),
@@ -52,69 +78,111 @@ class RegistryScreen extends StatelessWidget {
     ));
   }
 }
+//registro
+class LoginForm extends StatefulWidget {
+  LoginForm({Key? key}) : super(key: key);
+
+  @override
+  _LoginFormState createState() => _LoginFormState();
+}
 
 //campos de registro (formulario)
 
-class _LoginForm extends StatelessWidget {
+class _LoginFormState extends State<LoginForm> {
+  String _email = '';
+  String _password = '';
+  String _confirmarpassword = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _configureAmplify();
+  }
+
+  void _configureAmplify() async {
+    AmplifyAnalyticsPinpoint analyticsPlugin = AmplifyAnalyticsPinpoint();
+    AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
+    //await Amplify.addPlugins ([authPlugin, analyticsPlugin]);
+    Amplify.addPlugin(AmplifyAuthCognito());
+    try {
+      await Amplify.configure(amplifyconfig);
+    } on AmplifyAlreadyConfiguredException {
+      print(
+          "Tried to reconfigure Amplify; this can occur when your app restarts on Android.");
+    }
+  }
+
+  void _crearUsuario() async {
+    if (_password == _confirmarpassword) {
+      print(_email);
+      print(_password);
+      print(_confirmarpassword);
+      SignUpResult res = await Amplify.Auth.signUp(
+        username: _email,
+        password: _password,
+      );
+    }
+  }
+
+ 
+
   @override
   Widget build(BuildContext context) {
-    final loginForm = Provider.of<LoginFormProvider>(context);
-
     return Container(
       child: Form(
-          key: loginForm.formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
+              // campo correo
               TextFormField(
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecorations.authInputDecoration(
-                  hintText: 'Ana Perez',
-                  labelText: 'Nombre completo',
-                  prefixIcon: Icons.account_circle_sharp,
-                ),
-              ),
+                  autocorrect: false,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecorations.authInputDecoration(
+                      hintText: 'Correo',
+                      labelText: 'Correo',
+                      prefixIcon: Icons.attach_email_outlined),
+                  onChanged: (value) {
+                    print(value);
+                    setState(() {
+                      _email = value;
+                    });
+                  }),
 
+              // contraseña
               TextFormField(
-                autocorrect: false,
-                obscureText: true,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecorations.authInputDecoration(
-                    hintText: 'Edad',
-                    labelText: 'Edad',
-                    prefixIcon: Icons.calendar_today),
-              ),
+                  autocorrect: false,
+                  obscureText: true,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecorations.authInputDecoration(
+                      hintText: 'Contraseña',
+                      labelText: 'Contraseña',
+                      prefixIcon: Icons.lock_outline),
+                  onChanged: (value) {
+                    print(value);
+                    setState(() {
+                      _password = value;
+                    });
+                  }),
+
+              // campo confirmar contraseña
               TextFormField(
-                autocorrect: false,
-                obscureText: true,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecorations.authInputDecoration(
-                    hintText: 'Correo',
-                    labelText: 'Correo',
-                    prefixIcon: Icons.attach_email_outlined),
-              ),
-              TextFormField(
-                autocorrect: false,
-                obscureText: true,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecorations.authInputDecoration(
-                    hintText: 'Contraseña',
-                    labelText: 'Contraseña',
-                    prefixIcon: Icons.lock_outline),
-              ),
-              TextFormField(
-                autocorrect: false,
-                obscureText: true,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecorations.authInputDecoration(
-                    hintText: 'Confirmar contraseña',
-                    labelText: 'Confirmar contraseña',
-                    prefixIcon: Icons.lock_outline),
-              ),
+                  autocorrect: false,
+                  obscureText: true,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecorations.authInputDecoration(
+                      hintText: 'Confirmar contraseña',
+                      labelText: 'Confirmar contraseña',
+                      prefixIcon: Icons.lock_outline),
+                  onChanged: (value) {
+                    print(value);
+                    setState(() {
+                      _confirmarpassword = value;
+                    });
+                  }),
+
+//Codigo de verificacion
 
 //Boton para retroceder
-
               SizedBox(height: 30),
               MaterialButton(
                   shape: RoundedRectangleBorder(
@@ -131,7 +199,7 @@ class _LoginForm extends StatelessWidget {
                       )),
                   onPressed: () {
                     FocusScope.of(context).unfocus();
-                    if (!loginForm.isValidForm()) return;
+                    _crearUsuario();
                     Navigator.pushReplacementNamed(context, 'home');
                   }),
             ],
